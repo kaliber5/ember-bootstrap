@@ -1,0 +1,92 @@
+<h2>
+  Simple example
+</h2>
+<div class="bs-example" data-test-fastboot-container>
+  <!-- BEGIN-SNIPPET toast-simple -->
+  <BsToast
+    @title="Toast Support"
+    @message="Ember Bootstrap supports toasts"
+    @autohide={{false}}
+  />
+  <!-- END-SNIPPET -->
+</div>
+<div class="highlight">
+  <CodeSnippet @name="toast-simple.hbs" />
+</div>
+
+<h2>
+  Programatically showing and hiding
+</h2>
+<p>
+  You could programatically control the visibility of a toast using the <code>@show</code>
+  argument.
+</p>
+<div class="bs-example" data-test-fastboot-container>
+  <!-- BEGIN-SNIPPET toast-show -->
+  <BsToast
+    @title="Toast Support"
+    @message="Ember Bootstrap supports toasts"
+    @autohide={{false}}
+    @show={{showToast}}
+    @onHidden={{action (mut showToast) false}}
+  />
+  <!-- END-SNIPPET -->
+  <BsButton
+    @onClick={{action (mut showToast) (if showToast false true)}}
+  >
+    {{#if showToast}}hide{{else}}show{{/if}} toast
+  </BsButton>
+</div>
+<div class="highlight">
+  <CodeSnippet @name="toast-show.hbs" />
+</div>
+<BsAlert @type="warning" @dismissible={{false}}>
+  Be aware that resetting <code>@show</code> from <code>true</code> to <code>true</code>, won't
+  show the modal. It's recommended to set <code>@show</code> to <code>false</code>, when the modal
+  is hidden using <code>@onHidden</code> action.
+</BsAlert>
+
+<h2>
+  Automatically hiding the toast
+</h2>
+<p>
+  By default a toast is hidden automatically after 500ms. You could disable the autohiding
+  using <code>@autohide</code> argument. The delay could be configured by <code>@delay</code>
+  argument.
+</p>
+<div class="bs-example" data-test-fastboot-container>
+  <!-- BEGIN-SNIPPET toast-animated -->
+  <BsToast
+    @title="Toast Support"
+    @message="Ember Bootstrap supports toasts"
+    @delay={{autohideDelay}}
+    @show={{showAnimatedToast}}
+    @onHidden={{action (mut showAnimatedToast) false}}
+  />
+  <!-- END-SNIPPET -->
+  <BsForm @formLayout="inline" class="mb-2" as |form|>
+    <form.element
+      @controlType="number"
+      @label="delay"
+      @onChange={{action (mut autohideDelay)}}
+      @value={{autohideDelay}}
+      as |el|
+    >
+      <el.control class="ml-2" step="500" />
+    </form.element>
+  </BsForm>
+  <BsButton
+    @onClick={{action (mut showAnimatedToast) true}}
+  >
+    show toast
+  </BsButton>
+</div>
+<div class="highlight">
+  <CodeSnippet @name="toast-animated.hbs" />
+</div>
+
+<h2>Placement</h2>
+<p>
+  Bootstrap does not ship with a default placement for toasts nor Ember Bootstrap does. Please find
+  inspirations in <a href="https://getbootstrap.com/docs/4.3/components/toasts/#placement">Boostrap docs</a>.
+</p>

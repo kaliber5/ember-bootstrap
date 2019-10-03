@@ -24,6 +24,7 @@ Router.map(function() {
     this.route('tabs', function() {
       this.route('other');
     });
+    this.route('toast');
     this.route('tooltip');
   });
   this.route('getting-started', function() {

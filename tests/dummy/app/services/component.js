@@ -90,6 +90,13 @@ const componentData = A([
     bsUrl: 'https://getbootstrap.com/docs/4.3/components/navs/#tabs'
   },
   {
+    id: 'toast',
+    title: 'Toast',
+    className: 'Toast',
+    description: 'Show notifications with toasts.',
+    bsUrl: 'https://getbootstrap.com/docs/4.3/components/toasts/'
+  },
+  {
     id: 'tooltip',
     title: 'Tooltip',
     description: 'Add contextual information to any element.',

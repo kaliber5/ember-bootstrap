@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
+    "@ember/render-modifiers": "^1.0.1",
     "babel-eslint": "^8.0.0",
     "bootstrap": "^4.0.0",
     "bootstrap-sass": "^3.3.7",
@@ -51,6 +52,7 @@
     "ember-fetch": "^6.3.1",
     "ember-load-initializers": "^2.0.0",
     "ember-maybe-import-regenerator": "^0.1.6",
+    "ember-on-modifier": "^1.0.0",
     "ember-power-select": "^2.3.2",
     "ember-power-select-blockless": "^0.5.0",
     "ember-prism": "^0.5.0",
