@@ -510,6 +510,7 @@ module('Integration | Component | bs-modal-simple', function (hooks) {
       hbs`<div id="ember-bootstrap-wormhole"></div><div id="wrapper">{{#if this.show}}<BsModalSimple @title="Simple Dialog" @renderInPlace={{true}}>Hello world!</BsModalSimple>{{/if}}</div>`
     );
     this.set('show', true);
+    await settled();
 
     assert.dom('#wrapper .modal').exists({ count: 1 }, 'Modal exists in place');
   });

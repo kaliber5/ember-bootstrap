@@ -60,12 +60,6 @@ export default class Modal extends Component {
   document;
 
   /**
-   * @property _isOpen
-   * @private
-   */
-  _isOpen = false;
-
-  /**
    * Set to false to disable fade animations.
    *
    * @property fade
@@ -78,28 +72,6 @@ export default class Modal extends Component {
     let isFB = isFastBoot(this);
     return this.args.fade === undefined ? !isFB : this.args.fade;
   }
-
-  /**
-   * Used to apply Bootstrap's visibility classes.
-   *
-   * @property showModal
-   * @type boolean
-   * @default false
-   * @private
-   */
-  @tracked
-  showModal = this.open && (!this._fade || isFastBoot(this));
-
-  /**
-   * Render modal markup?
-   *
-   * @property inDom
-   * @type boolean
-   * @default false
-   * @private
-   */
-  @tracked
-  inDom = this.open;
 
   /**
    * @property paddingLeft
@@ -128,8 +100,6 @@ export default class Modal extends Component {
    * @default true
    * @public
    */
-  @arg
-  open = true;
 
   /**
    * Use a semi-transparent modal background to hide the rest of the page.
@@ -143,12 +113,12 @@ export default class Modal extends Component {
   backdrop = true;
 
   /**
-   * @property showBackdrop
+   * @property isBackdropShown
    * @type boolean
    * @private
    */
   @tracked
-  showBackdrop = this.open && this.backdrop;
+  isBackdropShown = false;
 
   /**
    * Closes the modal when escape key is pressed.
@@ -208,6 +178,70 @@ export default class Modal extends Component {
    * @type {String}
    * @private
    */
+
+  /**
+   * Controls if the modal is rendered in the DOM.
+   *
+   * It must be kept in sync with the non-tracked property `state`.
+   * To avoid getting out of sync it should be set only by the setter
+   * of `state` property.
+   */
+  @tracked isInDom = this.state !== 'closed';
+
+  /**
+   * Controls if the modal is visible.
+   *
+   * It must be kept in sync with the non-tracked property `state`.
+   * To avoid getting out of sync it should be set only the setter
+   * of `state` property.
+   */
+  @tracked isShowModal = this.state === 'open' || this.state === 'opening';
+
+  /**
+   * Current state of the modal.
+   *
+   * Possible values:
+   * - 'opening'
+   * - 'open'
+   * - 'closing'
+   * - 'closed'
+   *
+   * Setting it to `'closed'` also updates the `isModalShown` tracked
+   * property.
+   *
+   * State can not be tracked itself. The methods to show and hide the modal
+   * must read the current state before setting it. Otherwise the methods may
+   * try to show a modal, which is already shown or hide a modal, which is
+   * already hidden.
+   *
+   * @property state
+   * @private
+   */
+  get state() {
+    return this._state;
+  }
+  set state(value) {
+    this._state = value;
+    this.isInDom = value !== 'closed';
+    this.isShowModal = value === 'open' || value === 'opening';
+  }
+  _state = 'closed';
+
+  get isOpen() {
+    return this.state === 'open';
+  }
+
+  get isOpening() {
+    return this.state === 'opening';
+  }
+
+  get isClosing() {
+    return this.state === 'closing';
+  }
+
+  get isClosed() {
+    return this.state === 'closed';
+  }
 
   /**
    * The id of the `.modal` element.
@@ -387,6 +421,13 @@ export default class Modal extends Component {
    * @public
    */
 
+  /**
+   * @property isFastBoot
+   * @type boolean
+   * @private
+   */
+  isFastBoot = isFastBoot(this);
+
   @action
   close() {
     if (this.args.onHide?.() !== false) {
@@ -416,45 +457,50 @@ export default class Modal extends Component {
    * @method show
    * @private
    */
-  show() {
-    if (this._isOpen) {
+  async show() {
+    if (this.isOpening || this.isOpen) {
       return;
     }
-    this._isOpen = true;
+
+    this.state = 'opening';
 
     this.addBodyClass();
-    this.resize();
 
-    let callback = () => {
-      if (this.isDestroyed) {
-        return;
-      }
+    await this.showBackdrop();
 
-      this.checkScrollbar();
-      this.setScrollbar();
+    if (this.isDestroyed) {
+      return;
+    }
 
-      schedule('afterRender', () => {
-        let modalEl = this.modalElement;
-        if (!modalEl) {
+    this.checkScrollbar();
+    this.setScrollbar();
+
+    await new Promise((resolve) => {
+      schedule('afterRender', async () => {
+        let { modalElement, usesTransition, transitionDuration } = this;
+
+        if (!modalElement) {
           return;
         }
 
-        modalEl.scrollTop = 0;
+        modalElement.scrollTop = 0;
         this.adjustDialog();
-        this.showModal = true;
+        this.state = 'open';
         this.args.onShow?.();
 
-        if (this.usesTransition) {
-          transitionEnd(this.modalElement, this.transitionDuration).then(() => {
-            this.args.onShown?.();
-          });
-        } else {
-          this.args.onShown?.();
+        if (usesTransition) {
+          await transitionEnd(modalElement, transitionDuration);
         }
+
+        if (this.isDestroyed) {
+          return;
+        }
+
+        this.args.onShown?.();
+
+        resolve();
       });
-    };
-    this.inDom = true;
-    this.handleBackdrop(callback);
+    });
   }
 
   /**
@@ -463,20 +509,18 @@ export default class Modal extends Component {
    * @method hide
    * @private
    */
-  hide() {
-    if (!this._isOpen) {
+  async hide() {
+    if (this.isClosing || this.isClosed) {
       return;
     }
-    this._isOpen = false;
 
-    this.resize();
-    this.showModal = false;
+    this.state = 'closing';
 
     if (this.usesTransition) {
-      transitionEnd(this.modalElement, this.transitionDuration).then(() => this.hideModal());
-    } else {
-      this.hideModal();
+      await transitionEnd(this.modalElement, this.transitionDuration);
     }
+
+    this.hideModal();
   }
 
   /**
@@ -485,81 +529,79 @@ export default class Modal extends Component {
    * @method hideModal
    * @private
    */
-  hideModal() {
+  async hideModal() {
     if (this.isDestroyed) {
       return;
     }
 
-    this.handleBackdrop(() => {
-      this.removeBodyClass();
-      this.resetAdjustments();
-      this.resetScrollbar();
-      this.inDom = false;
-      this.args.onHidden?.();
+    await this.hideBackdrop();
+
+    if (this.isDestroyed) {
+      return;
+    }
+
+    this.removeBodyClass();
+    this.resetAdjustments();
+    this.resetScrollbar();
+    this.state = 'closed';
+    this.args.onHidden?.();
+  }
+
+  /**
+   * Show the backdrop
+   *
+   * @method showBackdrop
+   * @param callback
+   * @private
+   */
+  async showBackdrop() {
+    if (!this.backdrop) {
+      return;
+    }
+
+    this.isBackdropShown = true;
+
+    await new Promise((resolve) => {
+      next(async () => {
+        if (!this.backdrop) {
+          return;
+        }
+
+        let { backdropElement, usesTransition } = this;
+        assert('Backdrop element should be in DOM', backdropElement);
+
+        if (usesTransition) {
+          await transitionEnd(backdropElement, this.backdropTransitionDuration);
+        }
+
+        resolve();
+      });
     });
   }
 
   /**
-   * SHow/hide the backdrop
+   * Hide the backdrop
    *
-   * @method handleBackdrop
-   * @param callback
+   * @method hideBackdrop
    * @private
    */
-  handleBackdrop(callback) {
-    let doAnimate = this.usesTransition;
-
-    if (this.open && this.backdrop) {
-      this.showBackdrop = true;
-
-      if (!callback) {
-        return;
-      }
-
-      next(() => {
-        let backdrop = this.backdropElement;
-        assert('Backdrop element should be in DOM', backdrop);
-        if (doAnimate) {
-          transitionEnd(backdrop, this.backdropTransitionDuration).then(callback);
-        } else {
-          callback();
-        }
-      });
-    } else if (!this.open && this.backdrop) {
-      let backdrop = this.backdropElement;
-      assert('Backdrop element should be in DOM', backdrop);
-
-      let callbackRemove = () => {
-        if (this.isDestroyed) {
-          return;
-        }
-        this.showBackdrop = false;
-        if (callback) {
-          callback.call(this);
-        }
-      };
-      if (doAnimate) {
-        transitionEnd(backdrop, this.backdropTransitionDuration).then(callbackRemove);
-      } else {
-        callbackRemove();
-      }
-    } else if (callback) {
-      next(this, callback);
+  async hideBackdrop() {
+    if (!this.backdrop) {
+      return;
     }
-  }
 
-  /**
-   * Attach/Detach resize event listeners
-   *
-   * @method resize
-   * @private
-   */
-  resize() {
-    if (this.open) {
-      window.addEventListener('resize', this.adjustDialog, false);
-    } else {
-      window.removeEventListener('resize', this.adjustDialog, false);
+    let { backdropElement, usesTransition } = this;
+    assert('Backdrop element should be in DOM', backdropElement);
+
+    if (usesTransition) {
+      await transitionEnd(backdropElement, this.backdropTransitionDuration);
     }
+
+    if (this.isDestroyed) {
+      return;
+    }
+
+    this.isBackdropShown = false;
   }
 
   /**
@@ -568,6 +610,10 @@ export default class Modal extends Component {
    */
   @action
   adjustDialog() {
+    if (this.isClosed) {
+      return;
+    }
+
     let modalIsOverflowing = this.modalElement.scrollHeight > document.documentElement.clientHeight;
     this.paddingLeft = !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : undefined;
     this.paddingRight = this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : undefined;
@@ -614,6 +660,10 @@ export default class Modal extends Component {
    * @private
    */
   resetScrollbar() {
+    if (isFastBoot(this)) {
+      return;
+    }
+
     document.body.style.paddingRight = this._originalBodyPad;
   }
 
@@ -633,7 +683,11 @@ export default class Modal extends Component {
   }
 
   removeBodyClass() {
-    // no need for FastBoot support here
+    if (isFastBoot(this)) {
+      // no need for FastBoot support here
+      return;
+    }
+
     document.body.classList.remove('modal-open');
   }
 
@@ -657,20 +711,12 @@ export default class Modal extends Component {
   willDestroy() {
     super.willDestroy(...arguments);
 
-    if (typeof FastBoot === 'undefined') {
-      window.removeEventListener('resize', this.adjustDialog, false);
-      this.removeBodyClass();
-      this.resetScrollbar();
-    }
+    this.removeBodyClass();
+    this.resetScrollbar();
   }
 
   @action
   handleVisibilityChanges() {
-    if (isFastBoot(this)) {
-      this.addBodyClass();
-      return;
-    }
-
     if (this.args.open !== false) {
       this.show();
     } else {

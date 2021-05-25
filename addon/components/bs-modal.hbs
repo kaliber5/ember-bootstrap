@@ -1,14 +1,24 @@
 {{did-insert this.handleVisibilityChanges}}
 {{did-update this.handleVisibilityChanges @open}}
-{{#if this.inDom}}
+
+{{!
+  ember-on-helper do not support FastBoot yet. This guard can be removed as
+  soon as ember-on-helper guards for FastBoot itself. It is tracked in this
+  GitHub issue: https://github.com/buschtoens/ember-on-helper/issues/3
+}}
+{{#unless this.isFastBoot}}
+  {{on-window "resize" this.adjustDialog}}
+{{/unless}}
+
+{{#if this.isInDom}}
   {{#let (component (bs-default @dialogComponent (component "bs-modal/dialog"))
     onClose=this.close
     fade=this._fade
-    showModal=this.showModal
+    showModal=this.isShowModal
     keyboard=this.keyboard
     size=@size
     backdropClose=this.backdropClose
-    inDom=this.inDom
+    inDom=this.isInDom
     paddingLeft=this.paddingLeft
     paddingRight=this.paddingRight
     centered=(bs-eq this.position "center")
@@ -31,8 +41,8 @@
         }}
       </Dialog>
       <div>
-        {{#if this.showBackdrop}}
-          <div class="modal-backdrop {{if this._fade "fade"}} {{if this.showModal (if (macroCondition (macroGetOwnConfig "isNotBS3")) "show" "in")}}" id={{this.backdropId}}></div>
+        {{#if this.isBackdropShown}}
+          <div class="modal-backdrop {{if this._fade "fade"}} {{if this.isShowModal (if (macroCondition (macroGetOwnConfig "isNotBS3")) "show" "in")}}" id={{this.backdropId}}></div>
         {{/if}}
       </div>
     {{else}}
@@ -53,8 +63,8 @@
           }}
         </Dialog>
         <div>
-          {{#if this.showBackdrop}}
-            <div class="modal-backdrop {{if this._fade "fade"}} {{if this.showModal (if (macroCondition (macroGetOwnConfig "isNotBS3")) "show" "in")}}" id={{this.backdropId}}></div>
+          {{#if this.isBackdropShown}}
+            <div class="modal-backdrop {{if this._fade "fade"}} {{if this.isShowModal (if (macroCondition (macroGetOwnConfig "isNotBS3")) "show" "in")}}" id={{this.backdropId}}></div>
           {{/if}}
         </div>
       {{/in-element}}
