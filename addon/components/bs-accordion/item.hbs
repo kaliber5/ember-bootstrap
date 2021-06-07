@@ -4,7 +4,7 @@
 as |Title Body|
 }}
   <div
-    class="{{if @disabled "disabled"}} {{this.typeClass}} {{if (macroCondition (macroGetOwnConfig "isNotBS3")) "card"}} {{if (macroCondition (macroGetOwnConfig "isBS3")) "panel"}}"
+    class="{{if @disabled "disabled"}} {{this.typeClass}} {{if (macroCondition (macroGetOwnConfig "isBS3")) "panel"}} {{if (macroCondition (macroGetOwnConfig "isBS4")) "card"}} {{if (macroCondition (macroGetOwnConfig "isBS5")) "accordion-item"}}"
     ...attributes
   >
     {{#if (has-block-params)}}

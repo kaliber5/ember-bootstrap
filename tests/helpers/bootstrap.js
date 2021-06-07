@@ -95,21 +95,29 @@ export function formHelpTextClass() {
   return versionDependent('help-block', 'form-text');
 }
 
+export function accordionClass() {
+  return versionDependent('panel-group', 'accordion', 'accordion');
+}
+
+export function accordionItemClass() {
+  return versionDependent('panel', 'card', 'accordion-item');
+}
+
 export function accordionClassFor(type) {
   type = type ? `-${type}` : '';
   return versionDependent(`panel${type}`, type ? `bg${type}` : 'card');
 }
 
 export function accordionTitleSelector() {
-  return versionDependent('.panel-title', 'h5');
+  return versionDependent('.panel-title', 'h5', 'h2.accordion-header');
 }
 
 export function accordionItemHeadClass() {
-  return versionDependent('panel-heading', 'card-header');
+  return versionDependent('panel-heading', 'card-header', 'accordion-header');
 }
 
 export function accordionItemClickableSelector() {
-  return versionDependent('.panel-title a', 'h5 button');
+  return versionDependent('.panel-title a', 'h5 button', '.accordion-header button');
 }
 
 export function dropdownVisibilityElementSelector() {
@@ -117,7 +125,7 @@ export function dropdownVisibilityElementSelector() {
 }
 
 export function accordionItemBodyClass() {
-  return versionDependent('panel-body', 'card-body');
+  return versionDependent('panel-body', 'card-body', 'accordion-body');
 }
 
 export function tooltipPositionClass(pos) {

@@ -1,23 +1,40 @@
 {{!-- template-lint-disable no-nested-interactive --}}
 {{!-- @todo fix this, see https://github.com/kaliber5/ember-bootstrap/issues/999 --}}
-<div
-  class="{{if @collapsed "collapsed" "expanded"}} {{if (macroCondition (macroGetOwnConfig "isNotBS3")) "card-header"}} {{if (macroCondition (macroGetOwnConfig "isBS3")) "panel-heading"}}"
-  role="tab"
-  ...attributes
-  {{on "click" this.handleClick}}
->
-  {{#if (macroCondition (macroGetOwnConfig "isNotBS3"))}}
-    <h5 class="mb-0">
-      <button class="btn btn-link {{if @disabled "disabled"}}" type="button" disabled={{@disabled}}>
-        {{yield}}
-      </button>
-    </h5>
-  {{/if}}
-  {{#if (macroCondition (macroGetOwnConfig "isBS3"))}}
-    <h4 class="panel-title">
-      <a href="#" class={{if @disabled "disabled"}}>
-        {{yield}}
-      </a>
-    </h4>
-  {{/if}}
-</div>
+{{#if (macroCondition (macroGetOwnConfig "isBS5"))}}
+  <h2
+    class="accordion-header"
+    role="tab"
+    ...attributes
+  >
+    <button
+      class="accordion-button {{if @disabled "disabled"}} {{if @collapsed "collapsed"}}"
+      type="button"
+      disabled={{@disabled}}
+      {{on "click" this.handleClick}}
+    >
+      {{yield}}
+    </button>
+  </h2>
+{{else}}
+  <div
+    class="{{if (macroCondition (macroGetOwnConfig "isBS3")) "panel-heading"}} {{if (macroCondition (macroGetOwnConfig "isBS4")) "card-header"}}"
+    role="tab"
+    ...attributes
+    {{on "click" this.handleClick}}
+  >
+    {{#if (macroCondition (macroGetOwnConfig "isBS4"))}}
+      <h5 class="mb-0">
+        <button class="btn btn-link {{if @disabled "disabled"}} {{if @collapsed "collapsed"}}" type="button" disabled={{@disabled}}>
+          {{yield}}
+        </button>
+      </h5>
+    {{/if}}
+    {{#if (macroCondition (macroGetOwnConfig "isBS3"))}}
+      <h4 class="panel-title">
+        <a href="#" class="{{if @disabled "disabled"}} {{if @collapsed "collapsed"}}" disabled={{@disabled}}>
+          {{yield}}
+        </a>
+      </h4>
+    {{/if}}
+  </div>
+{{/if}}
