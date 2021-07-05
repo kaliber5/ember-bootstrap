@@ -86,7 +86,7 @@
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",
-    "@embroider/test-setup": "^0.41.0",
+    "@embroider/test-setup": "^0.42.3",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.6.0",
     "bootstrap-sass": "^3.3.7",
