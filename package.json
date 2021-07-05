@@ -95,7 +95,7 @@
     "chai-things": "^0.2.0",
     "ember-a11y-testing": "^4.0.7",
     "ember-cli": "~3.26.1",
-    "ember-cli-app-version": "^4.0.0",
+    "ember-cli-app-version": "^5.0.0",
     "ember-cli-blueprint-test-helpers": "^0.19.1",
     "ember-cli-browserstack": "^1.1.0",
     "ember-cli-content-security-policy": "^2.0.0-4",
