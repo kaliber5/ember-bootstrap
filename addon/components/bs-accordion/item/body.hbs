@@ -1,5 +1,5 @@
 <BsCollapse @collapsed={{@collapsed}} class={{if (macroCondition (macroGetOwnConfig "isBS3")) "panel-collapse"}} role="tabpanel">
-  <div class="{{if (macroCondition (macroGetOwnConfig "isNotBS3")) "card-body"}} {{if (macroCondition (macroGetOwnConfig "isBS3")) "panel-body"}} {{@class}}">
+  <div class="{{if (macroCondition (macroGetOwnConfig "isBS3")) "panel-body"}} {{if (macroCondition (macroGetOwnConfig "isBS4")) "card-body"}} {{if (macroCondition (macroGetOwnConfig "isBS5")) "accordion-body"}} {{@class}}">
     {{yield}}
   </div>
 </BsCollapse>
