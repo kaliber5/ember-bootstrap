@@ -3,7 +3,7 @@ import { defer, reject, resolve } from 'rsvp';
 import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, render, click, settled, waitUntil } from '@ember/test-helpers';
-import { test, testNotBS3, defaultButtonClass } from '../../helpers/bootstrap';
+import { test, testNotBS3, defaultButtonClass, testForBootstrap } from '../../helpers/bootstrap';
 import { gte } from 'ember-compatibility-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupNoDeprecations from '../../helpers/setup-no-deprecations';
@@ -46,7 +46,7 @@ module('Integration | Component | bs-button', function (hooks) {
     assert.dom('button').hasClass('active', 'button has active class');
   });
 
-  test('button can be block', async function (assert) {
+  testForBootstrap([3, 4], 'button can be block', async function (assert) {
     await render(hbs`<BsButton @block={{true}}>Test</BsButton>`);
 
     assert.dom('button').hasClass('btn-block', 'button has block class');

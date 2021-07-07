@@ -174,7 +174,7 @@ export default class Button extends Component {
    */
 
   /**
-   * Property for block level buttons
+   * Property for block level buttons (BS3 and BS4 only!)
    *
    * See the [Bootstrap docs](http://getbootstrap.com/css/#buttons-sizes)
    * @property block
