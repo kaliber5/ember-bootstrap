@@ -30,6 +30,11 @@ import deprecateSubclassing from 'ember-bootstrap/utils/deprecate-subclassing';
 
   Default settings are the same as the original so you don't have to worry about changing parameters.
 
+  The component yields a hash with the following properties:
+  * `slide`: the component that would be used for rendering the carousel slide.
+  * `toPrevSlide`: function to change change the carousel to the previous slide.
+  * `toNextSlide`: function to change change the carousel to the next slide.
+
   ```hbs
   <BsCarousel as |car|>
     <car.slide>
