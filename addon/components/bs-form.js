@@ -454,7 +454,10 @@ export default class Form extends Component {
                 return;
               }
 
-              this.set('isRejected', true);
+              this.setProperties({
+                showAllValidations: true,
+                isRejected: true,
+              });
 
               throw error;
             })
