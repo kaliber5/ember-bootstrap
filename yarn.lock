@@ -1120,7 +1120,19 @@
     resolve "^1.8.1"
     semver "^7.3.2"
 
-"@embroider/macros@0.41.0", "@embroider/macros@^0.41.0":
+"@embroider/macros@0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@embroider/macros/-/macros-0.42.3.tgz#eb4dc35c43f1cb1d14298219ba037f8cead06081"
+  integrity sha512-4I+Sde8FU7QMwNQ3gYtj8fdBTqUeoPDn61XuV4Xng7p9LszQksGDXtyEhWrf9KWU3G+NtrZotY5LICd5P+E3tw==
+  dependencies:
+    "@embroider/shared-internals" "0.42.3"
+    assert-never "^1.2.1"
+    ember-cli-babel "^7.26.6"
+    lodash "^4.17.21"
+    resolve "^1.20.0"
+    semver "^7.3.2"
+
+"@embroider/macros@^0.41.0":
   version "0.41.0"
   resolved "https://registry.yarnpkg.com/@embroider/macros/-/macros-0.41.0.tgz#3e78b6f388d7229906abf4c75edfff8bb0208aca"
   integrity sha512-QISzwEEfLsskZeL0jyZDs1RoQSotwBWj+4upTogNHuxQP5j/9H3IMG/3QB1gh8GEpbudATb/cS4NDYK3UBxufw==
@@ -1158,6 +1170,19 @@
     semver "^7.3.2"
     typescript-memoize "^1.0.0-alpha.3"
 
+"@embroider/shared-internals@0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@embroider/shared-internals/-/shared-internals-0.42.3.tgz#65224fe86c55790417078b267add8f54148b59e3"
+  integrity sha512-AIFRumaGxzhzzSswtk97Z0ttu0dyRhXoDuOi6kPYHoprUdtt7biRAksrsbutWWdFapve7vKHFZdYVuiG8IbX0A==
+  dependencies:
+    ember-rfc176-data "^0.3.17"
+    fs-extra "^9.1.0"
+    lodash "^4.17.21"
+    pkg-up "^3.1.0"
+    resolve-package-path "^4.0.1"
+    semver "^7.3.5"
+    typescript-memoize "^1.0.1"
+
 "@embroider/test-setup@^0.41.0":
   version "0.41.0"
   resolved "https://registry.yarnpkg.com/@embroider/test-setup/-/test-setup-0.41.0.tgz#7e18fb266ba2f0b131256b303ef4e682f3ca9b20"
@@ -1175,12 +1200,12 @@
     broccoli-funnel ef4/broccoli-funnel#c70d060076e14793e8495571f304a976afc754ac
     ember-cli-babel "^7.23.1"
 
-"@embroider/util@^0.41.0":
-  version "0.41.0"
-  resolved "https://registry.yarnpkg.com/@embroider/util/-/util-0.41.0.tgz#5324cb4742aa4ed8d613c4f88a466f73e4e6acc1"
-  integrity sha512-ytA3J/YfQh7FEUEBwz3ezTqQNm/S5et5rZw3INBIy4Ak4x0NXV/VXLjyL8mv3txL8fGknZTBdXEhDsHUKIq8SQ==
+"@embroider/util@^0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@embroider/util/-/util-0.42.3.tgz#f22eb14d0333c279845e23069186a2bc7cc1a618"
+  integrity sha512-LeARn9j8B+BzES34IDyjlN6UvpCA5+yvtoEyPWfBxDiaZjmsY/K3GgzIWVtohY0taGtg1m64YvEDuNJ/S9GPxw==
   dependencies:
-    "@embroider/macros" "0.41.0"
+    "@embroider/macros" "0.42.3"
     broccoli-funnel "^3.0.5"
     ember-cli-babel "^7.23.1"
 
@@ -2413,7 +2438,7 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assert-never@^1.1.0:
+assert-never@^1.1.0, assert-never@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/assert-never/-/assert-never-1.2.1.tgz#11f0e363bf146205fb08193b5c7b90f4d1cf44fe"
   integrity sha512-TaTivMB6pYI1kXwrFlEhLeGfOqoDNdTxjCdwRfFFkEA30Eu+k48W34nlok2EYWJfFFzqaEmichdNM7th6M5HNw==
@@ -5822,7 +5847,7 @@ ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.6.0:
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.0.0, ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.17.2, ember-cli-babel@^7.19.0, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.3, ember-cli-babel@^7.26.4, ember-cli-babel@^7.7.3, ember-cli-babel@^7.8.0:
+ember-cli-babel@^7.0.0, ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.17.2, ember-cli-babel@^7.19.0, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.3, ember-cli-babel@^7.26.4, ember-cli-babel@^7.26.6, ember-cli-babel@^7.7.3, ember-cli-babel@^7.8.0:
   version "7.26.6"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.26.6.tgz#322fbbd3baad9dd99e3276ff05bc6faef5e54b39"
   integrity sha512-040svtfj2RC35j/WMwdWJFusZaXmNoytLAMyBDGLMSlRvznudTxZjGlPV6UupmtTBApy58cEF8Fq4a+COWoEmQ==
@@ -13113,6 +13138,13 @@ resolve-package-path@^3.1.0:
     path-root "^0.1.1"
     resolve "^1.17.0"
 
+resolve-package-path@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-4.0.1.tgz#0e77271e06c8cc41740d28ef974806a77fdc8880"
+  integrity sha512-2gb/yU2fSfX22pjDYyevzyOKK9q72XKUFqlAsrfPzZArM4JkIH/Qcme4n3EbaZttObWm/fIFLbPxrXIyiL8wdQ==
+  dependencies:
+    path-root "^0.1.1"
+
 resolve-path@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/resolve-path/-/resolve-path-1.4.0.tgz#c4bda9f5efb2fce65247873ab36bb4d834fe16f7"
@@ -13365,7 +13397,7 @@ semver@7.0.0, semver@~7.0.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.0.0.tgz#5f3ca35761e47e05b206c6daff2cf814f0316b8e"
   integrity sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==
 
-semver@7.3.5, semver@^7.0.0, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4:
+semver@7.3.5, semver@^7.0.0, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5:
   version "7.3.5"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.5.tgz#0b621c879348d8998e4b0e4be94b3f12e6018ef7"
   integrity sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==
@@ -14846,7 +14878,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript-memoize@^1.0.0-alpha.3:
+typescript-memoize@^1.0.0-alpha.3, typescript-memoize@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/typescript-memoize/-/typescript-memoize-1.0.1.tgz#0a8199aa28f6fe18517f6e9308ef7bfbe9a98d59"
   integrity sha512-oJNge1qUrOK37d5Y6Ly2txKeuelYVsFtNF6U9kXIN7juudcQaHJQg2MxLOy0CqtkW65rVDYuTCOjnSIVPd8z3w==
