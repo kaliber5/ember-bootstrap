@@ -118,6 +118,18 @@ module('Integration | Component | bs-dropdown', function (hooks) {
     assert.dom('.dropdown-menu').doesNotExist('Dropdown is closed');
   });
 
+  test('opened dropdown will not close on outside click if manualCloseOnly set to true', async function (assert) {
+    await render(
+      hbs`<BsDropdown @manualCloseOnly={{true}} as |dd|><dd.toggle>Dropdown <span class="caret"></span></dd.toggle><dd.menu><li><a href="#">Something</a></li></dd.menu></BsDropdown>`
+    );
+
+    await click('a.dropdown-toggle');
+    assert.dom(dropdownVisibilityElementSelector()).hasClass(openClass(), 'Dropdown is open');
+
+    await click('*');
+    assert.dom('.dropdown-menu').exists('Dropdown is not closed');
+  });
+
   test('clicking dropdown menu will close it', async function (assert) {
     await render(
       hbs`<BsDropdown as |dd|><dd.toggle>Dropdown <span class="caret"></span></dd.toggle><dd.menu><li><a href="#">Something</a></li></dd.menu></BsDropdown>`
@@ -128,6 +140,18 @@ module('Integration | Component | bs-dropdown', function (hooks) {
 
     await click('.dropdown-menu a');
     assert.dom('.dropdown-menu').doesNotExist('Dropdown is closed');
+  });
+
+  test('clicking dropdown menu will not close it if manualCloseOnly is set to true', async function (assert) {
+    await render(
+      hbs`<BsDropdown @manualCloseOnly={{true}} as |dd|><dd.toggle>Dropdown <span class="caret"></span></dd.toggle><dd.menu><li><a href="#">Something</a></li></dd.menu></BsDropdown>`
+    );
+    await click('a.dropdown-toggle');
+    assert.dom('.dropdown-menu').exists();
+    assert.dom(dropdownVisibilityElementSelector()).hasClass(openClass(), 'Dropdown is open');
+
+    await click('.dropdown-menu a');
+    assert.dom('.dropdown-menu').exists('Dropdown is not closed');
   });
 
   test('dropdown will close on click, when default is prevented, propagation is stopped', async function (assert) {

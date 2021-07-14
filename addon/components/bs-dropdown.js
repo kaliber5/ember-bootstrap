@@ -197,6 +197,18 @@ export default class Dropdown extends Component {
   isOpen = false;
 
   /**
+   * By default clicking outside a menu, tab or esc keypress will close it. Set this property to true for the menu to stay open.
+   * Use of this override will require calling the closeDropdown method in the menu to close it.
+   *
+   * @property manualCloseOnly
+   * @default false
+   * @type boolean
+   * @public
+   */
+  @defaultValue
+  manualCloseOnly = false;
+
+  /**
    * By default clicking on an open dropdown menu will close it. Set this property to false for the menu to stay open.
    *
    * @property closeOnMenuClick
@@ -311,6 +323,8 @@ export default class Dropdown extends Component {
    */
   @action
   closeHandler(e) {
+    if (this.manualCloseOnly) return;
+
     let { target } = e;
     let { toggleElement, menuElement } = this;
 
@@ -353,7 +367,7 @@ export default class Dropdown extends Component {
       this.openDropdown();
       return;
     } else if (event.which === ESCAPE_KEYCODE || event.which === SPACE_KEYCODE) {
-      this.closeDropdown();
+      if (!this.manualCloseOnly) this.closeDropdown();
       this.toggleElement.focus();
       return;
     }
