@@ -11,6 +11,7 @@ import {
   focus,
   render,
   settled,
+  setupOnerror,
   triggerEvent,
   triggerKeyEvent,
   waitFor,
@@ -242,12 +243,32 @@ module('Integration | Component | bs-form', function (hooks) {
     assert.dom(`.${formFeedbackClass()}`).hasText('There is an error');
   });
 
-  test('it does not catch errors thrown by onSubmit action', async function (assert) {
+  test('it does not catch errors thrown by synchronous @onSubmit action', async function (assert) {
     let onErrorStub = sinon.stub();
     let expectedError = new Error();
 
-    this.set('submitAction', sinon.fake.rejects(expectedError));
-    Ember.onerror = onErrorStub;
+    this.set('submitAction', () => {
+      throw expectedError;
+    });
+    setupOnerror(onErrorStub);
+
+    await render(hbs`
+      <BsForm @onSubmit={{this.submitAction}}>
+        <button type="submit">submit</button>
+      </BsForm>
+    `);
+    await click('button');
+    assert.ok(onErrorStub.calledOnceWith(expectedError));
+  });
+
+  test('it does not catch errors thrown by async @onSubmit action', async function (assert) {
+    let onErrorStub = sinon.stub();
+    let expectedError = new Error();
+
+    this.set('submitAction', async () => {
+      throw expectedError;
+    });
+    setupOnerror(onErrorStub);
 
     await render(hbs`
       <BsForm @onSubmit={{this.submitAction}}>

@@ -384,35 +384,36 @@ export default class Button extends Component {
    * @private
    */
   @action
-  handleClick(e) {
-    let onClick = this.args.onClick;
-    let preventConcurrency = this.args.preventConcurrency;
+  async handleClick(e) {
+    const { bubble, onClick, preventConcurrency } = this.args;
 
     if (typeof onClick !== 'function') {
       return;
     }
 
-    if (!preventConcurrency || !this.isPending) {
-      let promise = onClick(this.args.value);
-      if (promise && typeof promise.then === 'function' && !this.isDestroyed) {
-        this.state = 'pending';
-        promise.then(
-          () => {
-            if (!this.isDestroyed) {
-              this.state = 'fulfilled';
-            }
-          },
-          () => {
-            if (!this.isDestroyed) {
-              this.state = 'rejected';
-            }
-          }
-        );
-      }
+    // Shouldn't we prevent propagation regardless if `@onClick` is a function?
+    if (!bubble) {
+      e.stopPropagation();
     }
 
-    if (!this.args.bubble) {
-      e.stopPropagation();
+    if (preventConcurrency && this.isPending) {
+      return;
+    }
+
+    this.state = 'pending';
+
+    try {
+      await onClick(this.args.value);
+
+      if (!this.isDestroyed) {
+        this.state = 'fulfilled';
+      }
+    } catch (error) {
+      if (!this.isDestroyed) {
+        this.state = 'rejected';
+      }
+
+      throw error;
     }
   }
 

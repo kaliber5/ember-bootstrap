@@ -1,5 +1,5 @@
 import { run } from '@ember/runloop';
-import { defer, reject, resolve } from 'rsvp';
+import { defer, resolve } from 'rsvp';
 import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, render, click, settled, waitUntil } from '@ember/test-helpers';
@@ -9,10 +9,43 @@ import hbs from 'htmlbars-inline-precompile';
 import setupNoDeprecations from '../../helpers/setup-no-deprecations';
 import a11yAudit from 'ember-a11y-testing/test-support/audit';
 import sinon from 'sinon';
+/* global QUnit */
 
 module('Integration | Component | bs-button', function (hooks) {
   setupRenderingTest(hooks);
   setupNoDeprecations(hooks);
+
+  hooks.beforeEach(function (assert) {
+    /*
+     * The custom assertions `rejectsErrorNotGoinghThroughEmberOnError` allows to test
+     * functionality, which rejects intentionally. It serves a similar use case as
+     * `assert.throws` and `setupOnerror` utility provided by `@ember/test-helpers`.
+     * Sadly for some use cases none of them is working.
+     *
+     * `rejectsErrorNotGoinghThroughEmberOnError` should only be used for cases in which
+     * neither  `assert.throws` nor `setupOnerror` could be used. Otherwise these two
+     * methods to test rejecting promises should be preferred.
+     */
+    assert.rejectsErrorNotGoingThroughEmberOnError = async function (callback, expectedError) {
+      // https://github.com/qunitjs/qunit/issues/1419#issuecomment-561739486
+      const ORIG_QUNIT_UNHANDLED_REJECTION = QUnit.onUnhandledRejection;
+      QUnit.onUnhandledRejection = (reason) => {
+        if (reason === expectedError) {
+          assert.step('error is thrown');
+          assert.equal(reason, expectedError);
+        } else {
+          // QUnit should report all other unhandled rejections and mark
+          // the test as failed
+          return ORIG_QUNIT_UNHANDLED_REJECTION.call(QUnit, reason);
+        }
+      };
+
+      await callback();
+
+      assert.verifySteps(['error is thrown']);
+      QUnit.onUnhandledRejection = ORIG_QUNIT_UNHANDLED_REJECTION;
+    };
+  });
 
   hooks.beforeEach(function () {
     this.actions = {};
@@ -150,8 +183,11 @@ module('Integration | Component | bs-button', function (hooks) {
       return find('button').textContent.trim() === 'text for pending state';
     });
 
-    deferredClickAction.reject();
-    await settled();
+    const expectedError = new Error('error thrown for testing');
+    await assert.rejectsErrorNotGoingThroughEmberOnError(async () => {
+      deferredClickAction.reject(expectedError);
+      await settled();
+    }, expectedError);
     assert.dom('button').hasText('text for rejected state');
   });
 
@@ -179,8 +215,11 @@ module('Integration | Component | bs-button', function (hooks) {
       return find('button').textContent.trim() === 'default text';
     });
 
-    deferredClickAction.reject();
-    await settled();
+    const expectedError = new Error('error thrown for testing');
+    await assert.rejectsErrorNotGoingThroughEmberOnError(async () => {
+      deferredClickAction.reject(expectedError);
+      await settled();
+    }, expectedError);
     assert.dom('button').hasText('default text');
   });
 
@@ -277,8 +316,11 @@ module('Integration | Component | bs-button', function (hooks) {
       return find('button').textContent.trim() === 'isPending';
     });
 
-    deferredClickAction.reject();
-    await settled();
+    const expectedError = new Error('error thrown for testing');
+    await assert.rejectsErrorNotGoingThroughEmberOnError(async () => {
+      deferredClickAction.reject(expectedError);
+      await settled();
+    }, expectedError);
     assert.dom('button').hasText('isRejected');
 
     run(() => this.set('reset', true));
@@ -304,10 +346,13 @@ module('Integration | Component | bs-button', function (hooks) {
     run(() => this.set('reset', true));
     assert.dom('button').hasText('');
 
-    this.set('clickAction', () => {
-      return reject();
+    const expectedError = new Error('error thrown for testing');
+    this.set('clickAction', async () => {
+      throw expectedError;
     });
-    await click('button');
+    await assert.rejectsErrorNotGoingThroughEmberOnError(async () => {
+      await click('button');
+    }, expectedError);
     assert.dom('button').hasText('isSettled');
   });
 
@@ -401,6 +446,20 @@ module('Integration | Component | bs-button', function (hooks) {
     assert.equal(clickActionExecutionCount, 2);
 
     deferredClickAction.resolve();
+  });
+
+  test('it does not catch errors throws by @onClick event handlers', async function (assert) {
+    const expectedError = new Error('error thrown for testing');
+
+    this.set('clickHandler', async () => {
+      throw expectedError;
+    });
+
+    await render(hbs`<BsButton @onClick={{this.clickHandler}} />`);
+
+    await assert.rejectsErrorNotGoingThroughEmberOnError(async () => {
+      await click('button');
+    }, expectedError);
   });
 
   test('it passes accessibility checks', async function (assert) {
